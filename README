@@ -1,0 +1,5 @@
+
+* git clone git@github.com:agam/mercurynews.git
+* Download/install Titanium Appcelerator
+* "Import Project", select this directory
+* Select the project, click on "Test & Package", then "Launch"
