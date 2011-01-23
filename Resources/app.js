@@ -1,6 +1,8 @@
 // this sets the background color of the master UIView (when there are no windows/tab groups on it)
 Titanium.UI.setBackgroundColor('#000');
 
+Ti.API.info('Starting app !');
+
 // create tab group
 var tabGroup = Titanium.UI.createTabGroup({id:'MainPage'});
 
@@ -36,11 +38,15 @@ for (var i = 0, len = tabNames.length; i < len; ++i) {
 		window: win
 	});
 	// TODO(agam): populate window with table view corresponding to section feeds
-	tabGroup.add(tab);
+	tabGroup.addTab(tab);
 }
 
 // First tab is default
 tabGroup.setActiveTab(1);
 
 // open tab group
-tabGroup.open();
+tabGroup.open({
+	transition:Titanium.UI.iPhone.AnimationStyle.FLIP_FROM_LEFT
+});
+
+Ti.API.info('Loaded app !');
