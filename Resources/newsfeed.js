@@ -20,8 +20,6 @@ function populateNewsSnippets(xml) {
 	var numItems = items.length;
 	Ti.API.info('Num items : ' + numItems);
 	for (var i = 0; i < numItems; ++i) {
-		Ti.API.info('title: ' + items.item(i).getElementsByTagName('title').item(0).text);
-		Ti.API.info('description: ' + items.item(i).getElementsByTagName('description').item(0).text);
 		var row = Titanium.UI.createTableViewRow({height: 'auto'});
 		var snippetView = Titanium.UI.createView({
 			height: 'auto',
@@ -29,35 +27,70 @@ function populateNewsSnippets(xml) {
 			top: 5, right: 5, bottom: 5, left: 5
 		});
 		// Add an 'optional' image
-		var newsSnippetImage = Titanium.UI.createImageView({
-			image: 'http://frederatorblogs.com/random/files/2008/04/b-corrupted-by-random-noise-bit-error-rate0020.thumbnail.gif',
-			top: 0, left: 0,
-			height: 48, width: 48
-		});
-		// Add title
-		var newsSnippetTitle = Titanium.UI.createLabel({
-			text: items.item(i).getElementsByTagName('title').item(0).text,
-			left: 54, width: 120,
-			top: -48, bottom: 2, height: 16,
-			textAlign: 'left',
-			color: '#444444',
-			font: {
-				fontFamily: 'Trebuchet MS', fontSize: 14, fontWeight: 'bold'
-			}
-		});
-		// Add actual snippet
-		var newsSnippetText = Titanium.UI.createLabel({
-			text: items.item(i).getElementsByTagName('description').item(0).text,
-			left: 54, top: 0,
-			bottom: 2, height: 'auto',
-			width: 236,
-			textAlign: 'left',
-			font: {fontSize: 14}	
-		});
-		// Add parts of the row view
-		snippetView.add(newsSnippetImage);
-		snippetView.add(newsSnippetTitle);
-		snippetView.add(newsSnippetText);
+		var newsSnippetImage = null;
+		var newsSnippetTitle = null;
+		var newsSnippetText = null;
+		var enclosure = items.item(i).getElementsByTagName('enclosure');
+		if (enclosure !== null) {
+			// TODO(agam): Also verify image type
+			newsSnippetImage = Titanium.UI.createImageView({
+				image: enclosure.item(0).getAttribute('url'),
+				top: 0, left: 0,
+				height: 48, width: 48
+			});
+		}
+		// Different layout, depending on whether we're showing an image in this row
+		if (newsSnippetImage === null) {
+			Ti.API.info('NO IMAGE');
+			// Add title
+			newsSnippetTitle = Titanium.UI.createLabel({
+				text: items.item(i).getElementsByTagName('title').item(0).text,
+				left:0, width: 320,
+				top: 0, bottom: 2, height: 16,
+				textAlign: 'left',
+				color: '#444444',
+				font: {
+					fontFamily: 'Trebuchet MS', fontSize: 14, fontWeight: 'bold'
+				}
+			});
+			// Add actual snippet
+			newsSnippetText = Titanium.UI.createLabel({
+				text: items.item(i).getElementsByTagName('description').item(0).text,
+				left:0, top: 0,
+				bottom:2, height: 32,
+				width: 320,
+				textAlign: 'left',
+				font: {fontSize: 14}
+			});
+			snippetView.add(newsSnippetTitle);
+			snippetView.add(newsSnippetText);
+		} else {
+						Ti.API.info('WE HAVE IMAGE');
+			// Add title
+			newsSnippetTitle = Titanium.UI.createLabel({
+				text: items.item(i).getElementsByTagName('title').item(0).text,
+				left: 54, width: 260,
+				top: -48, bottom: 2, height: 16,
+				textAlign: 'left',
+				color: '#444444',
+				font: {
+					fontFamily: 'Trebuchet MS', fontSize: 14, fontWeight: 'bold'
+				}
+			});
+			// Add actual snippet
+			newsSnippetText = Titanium.UI.createLabel({
+				text: items.item(i).getElementsByTagName('description').item(0).text,
+				left: 54, top: 0,
+				bottom: 2, height: 32,
+				width: 260,
+				textAlign: 'left',
+				font: {fontSize: 14}	
+			});
+			// Add parts of the row view
+			snippetView.add(newsSnippetImage);
+			snippetView.add(newsSnippetTitle);
+			snippetView.add(newsSnippetText);
+		}	
 		
 		// Add this to the current row
 		row.add(snippetView);
